@@ -1,32 +1,25 @@
-cmake_minimum_required(VERSION 2.8) 
+cmake_minimum_required(VERSION 2.6)
 
-set(PROJECT_NAME HasingTables) 
-project(${PROJECT_NAME})
+project(Hashing)
 
-set(main main)
-set(chain_hash chain_hash)
-set(open_adr_hash open_adr_hash)
-set(perfect_hash perfect_hash)
-set(graph_hash graph_hash)
-set(cuckoo_hash cuckoo_hash)
+set (${PROJECT_NAME}_VERSION_MAJOR 0)
+set (${PROJECT_NAME}_VERSION_MINOR 1)
+set (${PROJECT_NAME}_VERSION_PATCH 0)
+set (${PROJECT_NAME}_VERSION_TWEAK 0)
+set (${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}.${${PROJECT_NAME}_VERSION_TWEAK}")
 
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
-if(NOT CMAKE_BUILD_TYPE) 
-  set(CMAKE_BUILD_TYPE Release) 
-endif()
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/chain_hash)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/open_adr_hash)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/perfect_hash)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/graph_hash)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cuckoo_hash)
+include(cmake_utils/macro.cmake)
 
-add_subdirectory(main)
-add_subdirectory(chain_hash)
-add_subdirectory(open_adr_hash)
-add_subdirectory(perfect_hash)
-add_subdirectory(graph_hash)
-add_subdirectory(cuckoo_hash)
+export_gtest()
 
-file(GLOB hdrs "*.h*")
-file(GLOB srcs "*.cpp")
+add_subdirectory("${CMAKE_SOURCE_DIR}/library")
+
+# add_subdirectory("${CMAKE_SOURCE_DIR}/3rdparty/gtest")
+
+add_subdirectory("${CMAKE_SOURCE_DIR}/performance")
+
+add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
+
+add_subdirectory("${CMAKE_SOURCE_DIR}/examples")
