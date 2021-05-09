@@ -10,7 +10,7 @@
 #include <vector>
 #include <list>
 #include <stdio.h>
-
+#include "utils/utils.h"
 using std::cout;
 using std::cin;
 using std::endl;
@@ -67,18 +67,18 @@ private:
     {
         if constexpr (mode == 1) // Linear probe
         {
-            const int hashString = hashString(key);
-            return  (std::hash<int>()(hashString) + i) % _tableSize;
+            const int hashStr = hashString(key);
+            return  (std::hash<int>()(hashStr) + i) % _tableSize;
         }
         else if constexpr (mode == 2) // Quadratic probe
         {
-            const int hashString = hashString(key);
-            return (std::hash<int>()(hashString) + 2U * i + 4U * i * i) % _tableSize;
+            const int hashStr = hashString(key);
+            return (std::hash<int>()(hashStr) + 2U * i + 4U * i * i) % _tableSize;
         }
         else if constexpr (mode == 3) // Double hashing
         {
-            const int hashString = hashString(key);
-            return (std::hash<int>()(hashString) + i * (hashString % _tableSize)) % _tableSize;
+            const int hashStr = hashString(key);
+            return (std::hash<int>()(hashStr) + i * (hashStr % _tableSize)) % _tableSize;
         }
     }
 
