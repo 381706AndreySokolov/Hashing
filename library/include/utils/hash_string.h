@@ -2,4 +2,4 @@
 
 #include <string>
 
-int hashString(std::string str);
+size_t hashString(std::string str);

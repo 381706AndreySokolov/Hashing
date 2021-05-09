@@ -20,6 +20,6 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/library")
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/performance")
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
+# add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/examples")

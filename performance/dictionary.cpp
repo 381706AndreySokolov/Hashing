@@ -23,7 +23,7 @@ int main()
     std::cout << "======================Dictionary===================" << std::endl;
     constexpr std::uint64_t wordsCount{466552UL}; // Words in english.txt file
     std::uint64_t           wordsInserted{0UL};   // Inserted words into a hash table
-    std::uint64_t           fillFactor{10UL};      // Expected hash table fill factor
+    std::uint64_t           fillFactor{10UL};     // Expected hash table fill factor
     size_t                  tableSize{wordsCount / fillFactor};
 
     std::string word{};
@@ -57,7 +57,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -90,7 +89,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -124,7 +122,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -157,7 +154,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -190,7 +186,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -224,7 +219,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -258,7 +252,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -292,7 +285,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -309,23 +301,26 @@ int main()
         throw "Unable to open file!";
     }
 
-    using TableType = chain_hash::HashTable<std::string, std::uint64_t, 5>;
-    TableType table(tableSize);
+    using TableType      = perfect_hash::HashTable<std::string, int>;
+    using InputVecorType = std::vector<std::pair<std::string, int>>;
 
-    auto start = std::chrono::system_clock::now();
+    TableType table{};
+    InputVecorType inputVector{};
 
     while(getline(inFile, word))
     {
-        table.insert(word, wordsInserted);
+        inputVector.push_back(std::make_pair(word, wordsInserted));
         wordsInserted++;
     }
+
+    auto start = std::chrono::system_clock::now();
+    table.Initialize(tableSize, inputVector);
     auto end = std::chrono::system_clock::now();
 
     std::chrono::duration<double> elasped_seconds = end-start;
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }
@@ -358,7 +353,6 @@ int main()
 
     std::cout << "Total time = "  << elasped_seconds.count() << 
     ". Inserted " << wordsInserted << " words of " << wordsCount << std::endl;
-    std::cout << "Table size = " << tableSize << std::endl;
     inFile.close();
     wordsInserted = 0UL;
 }

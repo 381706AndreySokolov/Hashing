@@ -198,6 +198,7 @@ private:
 template<typename Key, typename Value, int mode>
 HashTable<Key, Value, mode>::HashTable(const size_t tableSize) : _tableSize(tableSize), _size(0)
 {
+    static_assert(mode > 0 && mode < 6, "Mode != 1,2,3,4,5");
     _buffer = new HashNodeType* [_tableSize];
     for (size_t idx = 0; idx < _tableSize; ++idx)
     {

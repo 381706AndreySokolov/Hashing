@@ -10,12 +10,12 @@ int main()
     constexpr int    intKey{12};
     UniversalHash<int> UniversalHashInt(tableSize);
 
-    unsigned int idx_int = UniversalHashInt(intKey);
+    unsigned int idx_int = UniversalHashInt.hash(intKey);
 
     const std::string strKey{"HashKey"};
     UniversalHash<std::string> UniversalHashSting(tableSize);
 
-    unsigned int idx_string = UniversalHashSting(strKey);
+    unsigned int idx_string = UniversalHashSting.hash(strKey);
 
     std::cout << "=========================================" << std::endl;
     std::cout << "tableSize = " << tableSize << std::endl;

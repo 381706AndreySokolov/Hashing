@@ -58,6 +58,20 @@ public:
         this->b = b_uid(mers);
     }
 
+    void init(size_t tableSize, int k)
+    {
+        this->k = k;
+        this->tableSize = tableSize;
+        std::random_device randDev;
+        std::mt19937 mers(randDev());
+        std::uniform_int_distribution<int> a_uid(1, prime - 1);
+        std::uniform_int_distribution<int> b_uid(0, prime - 1);
+        for (int i = 0; i < k; i++) {
+            this->a_array.push_back(a_uid(mers));
+        }
+        this->b = b_uid(mers);
+    }
+
     size_t hash(const int &key) const
     {
         size_t l = 0;

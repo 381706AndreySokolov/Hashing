@@ -7,6 +7,8 @@ template <typename KeyType>
 class UniversalHash
 {
 public:
+
+    //UniversalHash<int>& operator=(UniversalHash<int>&&) = default;
     UniversalHash(size_t tableSize) : tableSize(tableSize)
     { }
 
@@ -23,8 +25,22 @@ template <>
 class UniversalHash<int>
 {
 public:
+
+    UniversalHash() = default;
+
     UniversalHash(size_t tableSize) : tableSize(tableSize)
     {
+        std::random_device randDev{};
+        std::mt19937 mt(randDev());
+        std::uniform_int_distribution<int> a_uid(1, prime - 1);
+        std::uniform_int_distribution<int> b_uid(0, prime - 1);
+        this->a = a_uid(mt);
+        this->b = b_uid(mt);
+    }
+
+    void init(size_t tableSize)
+    {
+        this->tableSize = tableSize;
         std::random_device randDev{};
         std::mt19937 mt(randDev());
         std::uniform_int_distribution<int> a_uid(1, prime - 1);
@@ -46,7 +62,7 @@ public:
         this->b = b_uid(mt);
     }
 
-    unsigned int operator()(const int &key) const
+    unsigned int hash(const int &key) const
     {
         unsigned int l = 0;
 
@@ -78,7 +94,7 @@ private:
     size_t tableSize;
     int k = -1;
     unsigned int a, b;
-    const unsigned int prime = 150001U;
+    const unsigned int prime = 100013U;//150001U;
     std::vector<int> a_array;
 };
 
@@ -93,7 +109,7 @@ public:
         intUniversal = new UniversalHash<int>(tableSize);
     }
 
-    unsigned int operator()(const std::string key) const
+    unsigned int hash(const std::string key) const
     {
         int hkey = 0;//5381;
         for (size_t i = 0; i < key.size(); ++i)
@@ -101,7 +117,7 @@ public:
             hkey = ((hkey << 5)+hkey) + key[i];
         }
         //return (hkey >= tableSize) ? hkey % tableSize : hkey;
-        return intUniversal->operator()(hkey);
+        return intUniversal->hash(hkey);
     }
 private:
     UniversalHash<int>* intUniversal;
