@@ -35,13 +35,11 @@ public:
     size_t _subTableSize;
     size_t _maxLoop;
     Key    _maxValue;
-    int prime;
-    int a1, a2, n;
 
     std::vector<HashNodeType> _table1;
     std::vector<HashNodeType> _table2;
-    KeyHash<int> kIndHash1;
-    KeyHash<int> kIndHash2;
+    KIndHash<int> kIndHash1;
+    KIndHash<int> kIndHash2;
 
     HashTable(size_t tableSize)
     {
@@ -53,15 +51,11 @@ public:
         {
             _maxValue = std::numeric_limits<Key>::max();
         }
-        prime = 17;
-        a1 = rand() % (prime - 1) + 1;
-        a2 = rand() % (prime - 1) + 1;
-        n  = rand() % (prime - 1) + 1;
         _tableSize    = tableSize;
         _subTableSize = _tableSize / 2U;
         _maxLoop      = _subTableSize / 2U;
-        kIndHash1 = KeyHash<int>(_subTableSize, 4);
-        kIndHash2 = KeyHash<int>(_subTableSize, 4);
+        kIndHash1 = KIndHash<int>(_subTableSize, 4);
+        kIndHash2 = KIndHash<int>(_subTableSize, 4);
         _table1.assign(_subTableSize, HashNodeType{_maxValue, Value{}});
         _table2.assign(_subTableSize, HashNodeType{_maxValue, Value{}});
     }
@@ -149,9 +143,9 @@ private:
         if(static_cast<double>(_size) / static_cast<double>(_tableSize) > 0.8)
             realloc();
         
-        a1 = rand() % (prime - 1) + 1;
-        a2 = rand() % (prime - 1) + 1;
-        
+        kIndHash1 = KIndHash<int>(_subTableSize, 4);
+        kIndHash2 = KIndHash<int>(_subTableSize, 4);
+
         for(size_t i = 0; i < elemVector.size(); ++i)
         {
             insert(elemVector[i].key, elemVector[i].value);

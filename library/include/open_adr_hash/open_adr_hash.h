@@ -67,18 +67,18 @@ private:
     {
         if constexpr (mode == 1) // Linear probe
         {
-            const int hashKey = hashString(key);
-            return  (std::hash<int>()(hashKey) + i) % _tableSize;
+            const int hashString = hashString(key);
+            return  (std::hash<int>()(hashString) + i) % _tableSize;
         }
         else if constexpr (mode == 2) // Quadratic probe
         {
-            const int hashKey = hashString(key);
-            return (std::hash<int>()(hashKey) + 2U * i + 4U * i * i) % _tableSize;
+            const int hashString = hashString(key);
+            return (std::hash<int>()(hashString) + 2U * i + 4U * i * i) % _tableSize;
         }
         else if constexpr (mode == 3) // Double hashing
         {
-            const int hashKey = hashString(key);
-            return (std::hash<int>()(hashKey) + i * std::hash<int>()(hashKey)) % _tableSize;
+            const int hashString = hashString(key);
+            return (std::hash<int>()(hashString) + i * (hashString % _tableSize)) % _tableSize;
         }
     }
 
@@ -144,18 +144,15 @@ bool HashTable<Key, Value, mode>::insert(const Key& key, const Value& value)
 
     while (_buffer[hash(key, i)].key != maxValue)
     {
-        // std::cout << "i = " << i << std::endl;
         i++;
     }
 
     if (i == _tableSize)
     {
-        // std::cout << "i == _tableSize, _size = " << _size << std::endl;
         return false;
     }
     else
     {
-        // std::cout << "Inserted, _size = " << _size << std::endl;
         _buffer[hash(key, i)].key = key;
         _buffer[hash(key, i)].value = value;
         _size++;

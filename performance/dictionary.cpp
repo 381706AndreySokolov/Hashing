@@ -107,7 +107,6 @@ int main()
 
     using TableType = chain_hash::HashTable<std::string, std::uint64_t, 3>;
     TableType table(tableSize);
-    table.initUniversalHash();
 
     auto start = std::chrono::system_clock::now();
 

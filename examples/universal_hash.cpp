@@ -12,19 +12,11 @@ int main()
 
     unsigned int idx_int = UniversalHashInt.hash(intKey);
 
-    const std::string strKey{"HashKey"};
-    UniversalHash<std::string> UniversalHashSting(tableSize);
-
-    unsigned int idx_string = UniversalHashSting.hash(strKey);
-
     std::cout << "=========================================" << std::endl;
     std::cout << "tableSize = " << tableSize << std::endl;
     std::cout << "=========================================" << std::endl;
     std::cout << "int key = " << intKey << std::endl;
     std::cout << "Index for int key = " << idx_int << std::endl;
-    std::cout << "=========================================" << std::endl;
-    std::cout << "string key = " << strKey << std::endl;
-    std::cout << "Index for string key = " << idx_string << std::endl;
     std::cout << "=========================================" << std::endl;
     return 0;
 }

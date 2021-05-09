@@ -45,7 +45,7 @@ public:
         }
     }
 
-    bool Contains(Key key) const
+    bool Contains(const Key& key)
     {
         const size_t hash = this->hash(key);
         return _subTables[hash].Contains(key);

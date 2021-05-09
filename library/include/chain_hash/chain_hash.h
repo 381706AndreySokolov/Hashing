@@ -34,6 +34,13 @@ class HashTable
     using HashNodeType = HashNode<Key, Value>;
 
 public:
+    const size_t _tableSize;
+    size_t _size;
+    HashNodeType** _buffer;
+
+    UniversalHash<int> universalHash;
+    KIndHash<int> kIndHash;
+
     HashTable(const size_t tableSize);
     ~HashTable();
     int getTableSize() { return _tableSize; }
@@ -55,19 +62,12 @@ public:
         }
         return distribution;
     }
+
     Value operator[](const Key& key);
-    
-    // For Universal Hashing
-    void initUniversalHash()
-    {
-        setP(17LL);
-        setA(std::rand() % _p_prime);
-        setB(1 + std::rand() % (_p_prime - 1));
-    }
-private:
+
     template <typename KeyT,
               typename std::enable_if<!std::is_same<KeyT, std::string>::value>::type* = nullptr>
-    int hash(const KeyT& key)
+    int hash(const KeyT& key) // for numbers
     {
         if constexpr (mode == 1U) // Div method
         {
@@ -76,27 +76,18 @@ private:
         else if constexpr (mode == 2U) // Mul method
         {
             constexpr float A{ 0.618f };
-            int idx = floor(_tableSize * fmod(key * A, 1.0f));
-            //std::cout << "idx = " << idx << std::endl;
-            return idx;
+            int hash = floor(_tableSize * fmod(key * A, 1.0f));
+            return hash % _tableSize;
         }
         else if constexpr (mode == 3U) // Universal method
         {
-            int idx = ((_a_prime * key + _b_prime) % _p_prime) % _tableSize;
-            //std::cout << "idx = " << idx << std::endl;
-            return idx;
+            auto hash = universalHash.hash(key);
+            return hash;
         }
         else if constexpr (mode == 4U) // k-Independent method
         {
-            std::uint64_t sum{ 0ULL };
-            for (int idx = _aVector.size() - 1; idx >= 0; --idx)
-            {
-                sum += _aVector[idx] * pow(key, idx);
-            }
-            //std::cout << "sum = " << sum << std::endl;
-            int idx = (sum % _p_prime) % _tableSize;
-            //std::cout << "idx = " << idx << std::endl;
-            return idx;
+            auto hash = kIndHash.hash(key);
+            return hash;
         }
         else if constexpr (mode == 5U) // std::hash
         {
@@ -110,40 +101,28 @@ private:
     {
         if constexpr (mode == 1U) // Div method
         {
-            int hkey = hashString(key);
-            int index = hkey % _tableSize;
-            return index;
+            int stringHash = hashString(key);
+            int hash = stringHash % _tableSize;
+            return hash;
         }
         else if constexpr (mode == 2U) // Mul method
         {
-            int hkey = hashString(key);
+            int stringHash = hashString(key);
             float A{ 0.618f };
-            int idx = floor(_tableSize * fmod(hkey * A, 1.0f));
-
-            if (idx % _tableSize > _tableSize)
-                std::cout << "idx = " << idx << std::endl;
-
-            return idx % _tableSize;
+            int hash = floor(_tableSize * fmod(stringHash * A, 1.0f));
+            return hash % _tableSize;
         }
         else if constexpr (mode == 3U) // Universal method
         {
-            int hkey = hashString(key);
-            int idx = ((_a_prime * hkey + _b_prime) % _p_prime) % _tableSize;
-            //std::cout << "idx = " << idx << std::endl;
-            return idx;
+            int stringHash = hashString(key);
+            auto hash = universalHash.hash(stringHash);
+            return hash;
         }
         else if constexpr (mode == 4U) // k-Independent method
         {
-            int hkey = hashString(key);
-            std::uint64_t sum{ 0ULL };
-            for (int idx = _aVector.size() - 1; idx >= 0; --idx)
-            {
-                sum += _aVector[idx] * pow(hkey, idx);
-            }
-            //std::cout << "sum = " << sum << std::endl;
-            int idx = (sum % _p_prime) % _tableSize;
-            //std::cout << "idx = " << idx << std::endl;
-            return idx;
+            int stringHash = hashString(key);
+            auto hash = kIndHash.hash(stringHash);
+            return hash;
         }
         else if constexpr (mode == 5U) // std::hash
         {
@@ -151,48 +130,6 @@ private:
         }
         return 0;
     }
-
-    int hashString(std::string str)
-    {
-        int hkey = 0;
-        for (size_t i = 0; i < str.size(); ++i)
-        {
-            hkey = ((hkey << 5)+hkey) + str[i];
-        }
-        return hkey;
-    }
-
-    const size_t _tableSize;
-    size_t _size;
-    HashNodeType** _buffer;
-
-
-private:
-    // void setP(std::int64_t p_prime = 17LL) { _p_prime = p_prime; }
-    // void setA(std::int64_t a_prime = (std::rand() % _p_prime)) { _a_prime = a_prime; }
-    // void setB(std::int64_t b_prime = (1 + std::rand() % (_p_prime - 1))) { _b_prime = b_prime; }
-
-    void setP(std::int64_t p_prime) { _p_prime = p_prime; }
-    void setA(std::int64_t a_prime) { _a_prime = a_prime; }
-    void setB(std::int64_t b_prime) { _b_prime = b_prime; }
-
-    std::int64_t _p_prime;// = pow(2, _tableSize) - 1;
-    std::int64_t _a_prime;//  = std::rand() % (_p_prime - 1);
-    std::int64_t _b_prime;// = 1 + std::rand() % (_p_prime - 1);
-
-// For K-Independent Hashing
-public:
-    void setAVector(std::vector<int64_t>& aVector) { _aVector = aVector; }
-    void generateAVector(int k)
-    {
-        _aVector.resize(k);
-        for (auto& value : _aVector)
-        {
-            value = std::rand() % _p_prime;
-        }
-    }
-private:
-    std::vector<int64_t> _aVector;
 };
 
 template<typename Key, typename Value, int mode>
@@ -204,6 +141,8 @@ HashTable<Key, Value, mode>::HashTable(const size_t tableSize) : _tableSize(tabl
     {
         _buffer[idx] = nullptr;
     }
+    universalHash.init(tableSize);
+    kIndHash.init(tableSize, 3);
 }
 
 template<typename Key, typename Value, int mode>

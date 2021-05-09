@@ -20,7 +20,7 @@ TEST(chain_hashing, univ_1_2)
     constexpr size_t tableSize = 10U;
     using TableType = chain_hash::HashTable<std::string, std::string, 4>;
     TableType table(tableSize);
-    table.initUniversalHash();
+
     std::string key("SomeWord");
     std::string name("Vasiliy");
 
